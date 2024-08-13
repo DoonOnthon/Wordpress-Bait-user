@@ -2,10 +2,10 @@
 /*
  * Plugin Name:       Bait-user
  * Plugin URI:        https://github.com/DoonOnthon/bait-user
- * Description:       Ban IP user based on bait account
+ * Description:       Ban IP user when they try to login to the bait account.
  * Version:          1.1
  * Requires at least: 6.6.1
- * Author:            Dean
+ * Author:            DoonOnthon / Dean
  * Author URI:        https://github.com/DoonOnthon
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
