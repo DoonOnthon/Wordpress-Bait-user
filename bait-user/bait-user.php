@@ -257,35 +257,34 @@ function update_htaccess_with_blocked_ips() {
     $table_name = $wpdb->prefix . 'blocked_ips';
     $blocked_ips = $wpdb->get_results("SELECT ip_address FROM $table_name");
 
-    $conf_content = "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
+    // Prepare the content to be added to .htaccess
+    $htaccess_content = "# BEGIN Bait User IP Block\n";
+    $htaccess_content .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
 
     foreach ($blocked_ips as $ip) {
-        $conf_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
+        $htaccess_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
     }
 
-    // Define the path to the configuration file
-    $conf_file = plugin_dir_path(__FILE__) . 'blocked-ips.conf';
-    
-    // Write the IP blocks to the blocked-ips.conf file
-    file_put_contents($conf_file, $conf_content);
+    $htaccess_content .= "# END Bait User IP Block\n";
 
-    // Ensure .htaccess includes the blocked-ips.conf file
+    // Define the path to the .htaccess file
     $htaccess_file = ABSPATH . '.htaccess';
     
     if (is_writable($htaccess_file)) {
-        $include_directive = "Include " . plugin_dir_path(__FILE__) . "blocked-ips.conf";
         $current_htaccess = file_get_contents($htaccess_file);
         
         // Remove any existing Bait User block
         $new_htaccess = preg_replace('/# BEGIN Bait User IP Block.*# END Bait User IP Block/s', '', $current_htaccess);
         
-        // Add the new include directive
-        $new_htaccess .= "\n# BEGIN Bait User IP Block\n";
-        $new_htaccess .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
-        $new_htaccess .= $include_directive . "\n";
-        $new_htaccess .= "# END Bait User IP Block\n";
+        // Add the new content
+        $new_htaccess .= "\n" . $htaccess_content;
 
-        file_put_contents($htaccess_file, $new_htaccess);
+        // Write the updated content back to .htaccess
+        if (file_put_contents($htaccess_file, $new_htaccess) === false) {
+            error_log('Failed to write to .htaccess file.');
+        } else {
+            error_log('Successfully updated .htaccess with blocked IPs.');
+        }
     } else {
         error_log('Failed to write to .htaccess file. Please check file permissions.');
     }
