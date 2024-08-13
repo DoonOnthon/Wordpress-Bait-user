@@ -3,7 +3,7 @@
  * Plugin Name:       Bait-user
  * Plugin URI:        https://github.com/DoonOnthon/bait-user
  * Description:       Ban IP user when they try to login to the bait account.
- * Version:          1.1
+ * Version:           1.1
  * Requires at least: 6.6.1
  * Author:            DoonOnthon / Dean
  * Author URI:        https://github.com/DoonOnthon
@@ -12,6 +12,15 @@
  * Update URI:        https://github.com/DoonOnthon/bait-user
  * Text Domain:       Bait-user
  */
+
+// Add a Settings link to the plugin's action links in the plugins list
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'bait_user_add_action_links');
+
+function bait_user_add_action_links($links) {
+    $settings_link = '<a href="admin.php?page=bait_user_settings">Settings</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+}
 
 // Hook into the activation action to check and create the table
 register_activation_hook(__FILE__, 'table_check_BU');
@@ -210,7 +219,7 @@ function bait_user_settings_page() {
     echo '<hr>';
 
     // .htaccess Instructions
-    echo '<h2>Block IPs at the Server Level with .htaccess</h2>';
+    echo '<h2>Manually Block IPs at the Server Level with .htaccess</h2>';
     echo '<p><strong>Important:</strong> Adding IP addresses to your .htaccess file will block them from accessing your site entirely, even before they reach WordPress. Only proceed if you know what you are doing. Always make a backup of your .htaccess file before editing it.</p>';
     echo '<p>Copy and paste the following lines into your .htaccess file to block the IPs manually:</p>';
 
