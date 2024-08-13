@@ -6,17 +6,13 @@ This roadmap outlines the future development plans and potential features for th
 
 ## Version 1.2.x
 
-### 1. **Move .htaccess writing to seperate file**
-   - **Extract IP Blocking Rules**: Relocate the IP addresses currently being blocked in the .htaccess file to a dedicated configuration file, ensuring a cleaner and more manageable .htaccess structure.
-   - **Implement Include Directive**: Update the .htaccess file to include the new configuration file, maintaining the same functionality while improving organization.
-
-### 2. **IP Whitelisting**
+### 1. **IP Whitelisting**
    - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user.
 
-### 3. **IP Range Blocking**
+### 2. **IP Range Blocking**
    - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks.
 
-### 4. **Logging and Reporting**
+### 3. **Logging and Reporting**
    - **Detailed Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames.
    - **Export Logs**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
      
@@ -44,6 +40,11 @@ This roadmap outlines the future development plans and potential features for th
 ### 9. **Basic Plugin Customization**
    - **Custom Block Page**: Allow users to customize the message or page that blocked users see when their IP has been blocked.
    - **Scheduled Blocking**: Implement a feature to schedule IP blocking and unblocking at specific times or intervals.
+
+### 10. **Move .htaccess writing to seperate file**
+   - **Extract IP Blocking Rules**: Relocate the IP addresses currently being blocked in the .htaccess file to a dedicated configuration file, ensuring a cleaner and more manageable .htaccess structure.
+
+   - **Implement Include Directive**: Update the .htaccess file to include the new configuration file, maintaining the same 
 
 ---
 
