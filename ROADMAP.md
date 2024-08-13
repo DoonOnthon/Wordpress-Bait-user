@@ -31,11 +31,7 @@ This roadmap outlines the future development plans and potential features for th
    - **Hooks and Filters**: Provide advanced users with hooks and filters to customize the plugin’s behavior to fit their unique security needs.
    - **Customizable Alerts**: Allow administrators to set custom alerts and actions based on specific security events, such as repeated login attempts from a single IP address.
 
-### 7. **Multisite Network Support**
-   - **Network-Wide IP Blocking**: Implement network-wide IP blocking for WordPress Multisite installations, allowing administrators to block IPs across all sites in the network from a single interface.
-   - **Centralized Settings Management**: Allow network admins to manage all Bait-User plugin settings across multiple sites from one centralized location.
-
-## Version 1.5.x and Beyond
+## Version 1.5.x and Beyond **(VERY LIKELY TO CHANGE)**
 
 ### 8. **Cloud Integration (Future Consideration)**
    - **Cloud-Based IP Blocking**: Integrate with cloud security services to block known malicious IPs in real-time across multiple sites using the plugin.
