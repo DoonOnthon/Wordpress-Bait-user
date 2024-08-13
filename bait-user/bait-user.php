@@ -3,8 +3,9 @@
  * Plugin Name:       Bait-user
  * Plugin URI:        https://github.com/DoonOnthon/bait-user
  * Description:       Ban IP user when they try to login to the bait account.
- * Version:           1.1
+ * Version:           1.2.1
  * Requires at least: 6.6.1
+ * Tested up to:      6.6.1
  * Author:            DoonOnthon / Dean
  * Author URI:        https://github.com/DoonOnthon
  * License:           GPL v2 or later
@@ -21,7 +22,15 @@ function bait_user_add_action_links($links) {
     array_unshift($links, $settings_link);
     return $links;
 }
+// Add custom plugin row meta to include 'Tested up to' and 'Requires at least'
+add_filter('plugin_row_meta', 'add_custom_plugin_meta', 10, 2);
 
+function add_custom_plugin_meta($plugin_meta, $plugin_file) {
+    if ($plugin_file === plugin_basename(__FILE__)) {
+        $plugin_meta[] = 'Tested up to: 6.6.1';
+    }
+    return $plugin_meta;
+}
 // Hook into the activation action to check and create the table
 register_activation_hook(__FILE__, 'table_check_BU');
 
@@ -241,7 +250,6 @@ function bait_user_settings_page() {
     echo '</div>';
 }
 
-
 // Function to update the .htaccess file with blocked IPs
 function update_htaccess_with_blocked_ips() {
     global $wpdb;
@@ -249,21 +257,33 @@ function update_htaccess_with_blocked_ips() {
     $table_name = $wpdb->prefix . 'blocked_ips';
     $blocked_ips = $wpdb->get_results("SELECT ip_address FROM $table_name");
 
-    $htaccess_content = "# BEGIN Bait User IP Block\n";
-    $htaccess_content .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
+    $conf_content = "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
 
     foreach ($blocked_ips as $ip) {
-        $htaccess_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
+        $conf_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
     }
 
-    $htaccess_content .= "# END Bait User IP Block\n";
+    // Define the path to the configuration file
+    $conf_file = plugin_dir_path(__FILE__) . 'blocked-ips.conf';
+    
+    // Write the IP blocks to the blocked-ips.conf file
+    file_put_contents($conf_file, $conf_content);
 
+    // Ensure .htaccess includes the blocked-ips.conf file
     $htaccess_file = ABSPATH . '.htaccess';
     
     if (is_writable($htaccess_file)) {
+        $include_directive = "Include " . plugin_dir_path(__FILE__) . "blocked-ips.conf";
         $current_htaccess = file_get_contents($htaccess_file);
+        
+        // Remove any existing Bait User block
         $new_htaccess = preg_replace('/# BEGIN Bait User IP Block.*# END Bait User IP Block/s', '', $current_htaccess);
-        $new_htaccess .= "\n" . $htaccess_content;
+        
+        // Add the new include directive
+        $new_htaccess .= "\n# BEGIN Bait User IP Block\n";
+        $new_htaccess .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
+        $new_htaccess .= $include_directive . "\n";
+        $new_htaccess .= "# END Bait User IP Block\n";
 
         file_put_contents($htaccess_file, $new_htaccess);
     } else {
