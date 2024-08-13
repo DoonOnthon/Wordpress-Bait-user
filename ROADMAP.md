@@ -1,16 +1,16 @@
 # Bait-User Plugin Roadmap
 
 *Please note: This roadmap is subject to change based on user feedback, development priorities, and evolving needs. It's intended to provide an overview of potential features and improvements for the Bait-User plugin.*
-| :white_check_mark: |
 
 This roadmap outlines the future development plans and potential features for the Bait-User WordPress Plugin. The goal is to continually improve the plugin's functionality, security, and user experience while keeping the feature set practical and user-focused.
-| :white_check_mark: |
 
 ## Version 1.2.x
 
 ### 1. **Move .htaccess writing to seperate file**
    - **Extract IP Blocking Rules**: Relocate the IP addresses currently being blocked in the .htaccess file to a dedicated configuration file, ensuring a cleaner and more manageable .htaccess structure.
+| :white_check_mark: |
    - **Implement Include Directive**: Update the .htaccess file to include the new configuration file, maintaining the same functionality while improving organization.
+| :white_check_mark: |
 
 ### 2. **IP Whitelisting**
    - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user.
