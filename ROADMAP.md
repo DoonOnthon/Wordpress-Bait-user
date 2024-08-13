@@ -1,8 +1,10 @@
 # Bait-User Plugin Roadmap
 
 *Please note: This roadmap is subject to change based on user feedback, development priorities, and evolving needs. It's intended to provide an overview of potential features and improvements for the Bait-User plugin.*
+| :white_check_mark: |
 
 This roadmap outlines the future development plans and potential features for the Bait-User WordPress Plugin. The goal is to continually improve the plugin's functionality, security, and user experience while keeping the feature set practical and user-focused.
+| :white_check_mark: |
 
 ## Version 1.2.x
 
