@@ -1,6 +1,6 @@
 # Bait-User WordPress Plugin
 **Tested versions**
-!Versions were tested on empty wordpress installs!
+!Versions were tested on empty wordpress installs!    
 | Version | Supported          |
 | ------- | ------------------ |
 | 6.5.5   | :white_check_mark: |
