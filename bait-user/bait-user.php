@@ -3,7 +3,7 @@
  * Plugin Name:       Bait-user
  * Plugin URI:        https://github.com/DoonOnthon/bait-user
  * Description:       Ban IP user when they try to login to the bait account.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Requires at least: 6.5.5
  * Tested up to:      6.6.1
  * Author:            DoonOnthon / Dean
@@ -22,6 +22,7 @@ function bait_user_add_action_links($links) {
     array_unshift($links, $settings_link);
     return $links;
 }
+
 // Add custom plugin row meta to include 'Tested up to' and 'Requires at least'
 add_filter('plugin_row_meta', 'add_custom_plugin_meta', 10, 2);
 
@@ -31,10 +32,10 @@ function add_custom_plugin_meta($plugin_meta, $plugin_file) {
     }
     return $plugin_meta;
 }
+
 // Hook into the activation action to check and create the table
 register_activation_hook(__FILE__, 'table_check_BU');
 
-// Function to check and create the table if it doesn't exist
 function table_check_BU() {
     global $wpdb;
 
@@ -80,15 +81,22 @@ function check_login_for_test($username, $password) {
     global $wpdb;
 
     $bait_user = get_option('bait_user_username');
+    $whitelist_ips = get_option('bait_user_whitelist_ips', []);
 
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
+    $user_ip = $_SERVER['REMOTE_ADDR'];
+
+    // Check if the IP is in the whitelist
+    if (in_array($user_ip, $whitelist_ips)) {
+        return; // Do nothing if the IP is whitelisted
+    }
+
     if ($username === $bait_user) {
         $_SESSION['show_ip'] = true;
 
-        $user_ip = $_SERVER['REMOTE_ADDR'];
         $table_name = $wpdb->prefix . 'blocked_ips';
 
         $wpdb->insert(
@@ -103,7 +111,6 @@ function check_login_for_test($username, $password) {
             )
         );
 
-        // Automatically update .htaccess if enabled
         if (get_option('bait_user_htaccess_enabled')) {
             update_htaccess_with_blocked_ips();
         }
@@ -118,12 +125,33 @@ function block_ip_if_needed() {
 
     $user_ip = $_SERVER['REMOTE_ADDR'];
     $table_name = $wpdb->prefix . 'blocked_ips';
+
+    // Check if the IP is in the block list
     $is_blocked = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE ip_address = %s", $user_ip));
+
+    // Also check if the IP is within any blocked ranges
+    $blocked_ranges = get_option('bait_user_blocked_ip_ranges', []);
+    foreach ($blocked_ranges as $range) {
+        if (ip_in_range($user_ip, $range)) {
+            $is_blocked++;
+            break;
+        }
+    }
 
     if ($is_blocked > 0) {
         header('HTTP/1.0 403 Forbidden');
         exit('Your IP has been blocked.');
     }
+}
+
+// Helper function to check if an IP is in a range
+function ip_in_range($ip, $range) {
+    list($range, $netmask) = explode('/', $range, 2);
+    $range_decimal = ip2long($range);
+    $ip_decimal = ip2long($ip);
+    $wildcard_decimal = pow(2, (32 - $netmask)) - 1;
+    $netmask_decimal = ~$wildcard_decimal;
+    return ($ip_decimal & $netmask_decimal) == ($range_decimal & $netmask_decimal);
 }
 
 // Hook into the admin_menu action to add a top-level menu
@@ -141,6 +169,14 @@ function bait_user_add_admin_menu() {
     );
 }
 
+// Handle removal of IP from the blocked list
+if (isset($_POST['remove_blocked_ip'])) {
+    $ip_to_remove = sanitize_text_field($_POST['remove_blocked_ip']);
+    $table_name = $wpdb->prefix . 'blocked_ips';
+    $wpdb->delete($table_name, array('ip_address' => $ip_to_remove), array('%s'));
+    echo '<div class="notice notice-success is-dismissible"><p>IP Address ' . esc_html($ip_to_remove) . ' has been removed.</p></div>';
+}
+
 // Function to display the content of the settings page
 function bait_user_settings_page() {
     global $wpdb;
@@ -155,8 +191,24 @@ function bait_user_settings_page() {
         echo '<div class="notice notice-success is-dismissible"><p>Settings have been updated.</p></div>';
     }
 
+    // Handle form submission for saving the whitelist IPs
+    if (isset($_POST['bait_user_whitelist_ips'])) {
+        $whitelist_ips = array_map('trim', explode("\n", sanitize_textarea_field($_POST['bait_user_whitelist_ips'])));
+        update_option('bait_user_whitelist_ips', array_filter($whitelist_ips));
+        echo '<div class="notice notice-success is-dismissible"><p>Whitelist IPs have been updated.</p></div>';
+    }
+
+    // Handle form submission for saving blocked IP ranges
+    if (isset($_POST['bait_user_blocked_ip_ranges'])) {
+        $blocked_ip_ranges = array_map('trim', explode("\n", sanitize_textarea_field($_POST['bait_user_blocked_ip_ranges'])));
+        update_option('bait_user_blocked_ip_ranges', array_filter($blocked_ip_ranges));
+        echo '<div class="notice notice-success is-dismissible"><p>Blocked IP Ranges have been updated.</p></div>';
+    }
+
     $saved_bait_user = get_option('bait_user_username', '');
     $htaccess_enabled = get_option('bait_user_htaccess_enabled', 0);
+    $saved_whitelist_ips = get_option('bait_user_whitelist_ips', []);
+    $blocked_ip_ranges = get_option('bait_user_blocked_ip_ranges', []);
     $users = get_users();
     $limit = 500;
     $table_name = $wpdb->prefix . 'blocked_ips';
@@ -191,6 +243,24 @@ function bait_user_settings_page() {
     echo '<p class="description">Only enable if you know what you are doing.</p>';
     echo '</td>';
     echo '</tr>';
+
+    // Whitelist IPs field
+    echo '<tr>';
+    echo '<th scope="row"><label for="bait_user_whitelist_ips">Whitelist IPs:</label></th>';
+    echo '<td>';
+    echo '<textarea name="bait_user_whitelist_ips" rows="10" cols="50" class="large-text code">' . esc_textarea(implode("\n", $saved_whitelist_ips)) . '</textarea>';
+    echo '<p class="description">Enter one IP address per line that should not be blocked, even if it logs into the bait account.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Blocked IP Ranges field
+    echo '<tr>';
+    echo '<th scope="row"><label for="bait_user_blocked_ip_ranges">Blocked IP Ranges:</label></th>';
+    echo '<td>';
+    echo '<textarea name="bait_user_blocked_ip_ranges" rows="10" cols="50" class="large-text code">' . esc_textarea(implode("\n", $blocked_ip_ranges)) . '</textarea>';
+    echo '<p class="description">Enter one IP range per line (e.g., 192.168.1.0/24) that should be blocked.</p>';
+    echo '</td>';
+    echo '</tr>';
     
     echo '</table>';
     echo '<p class="submit"><input type="submit" class="button button-primary" value="Save Changes" /></p>';
@@ -202,11 +272,13 @@ function bait_user_settings_page() {
     echo '<p>Showing Latest ' . $limit . ' Entries</p>';
     
     if (!empty($blocked_ips)) {
+        echo '<form method="POST" action="">';
         echo '<table class="widefat fixed striped">';
         echo '<thead>';
         echo '<tr>';
         echo '<th scope="col" class="manage-column">IP Address</th>';
         echo '<th scope="col" class="manage-column">Blocked At</th>';
+        echo '<th scope="col" class="manage-column">Action</th>';
         echo '</tr>';
         echo '</thead>';
         echo '<tbody>';
@@ -215,11 +287,15 @@ function bait_user_settings_page() {
             echo '<tr>';
             echo '<td>' . esc_html($ip->ip_address) . '</td>';
             echo '<td>' . esc_html($ip->blocked_at) . '</td>';
+            echo '<td>';
+            echo '<button type="submit" name="remove_blocked_ip" value="' . esc_attr($ip->ip_address) . '" class="button-secondary">Remove</button>';
+            echo '</td>';
             echo '</tr>';
         }
 
         echo '</tbody>';
         echo '</table>';
+        echo '</form>';
         echo '<p>To view all banned IP addresses, please access the database directly.</p>';
     } else {
         echo '<p>No IP addresses have been banned yet.</p>';
@@ -232,7 +308,7 @@ function bait_user_settings_page() {
     echo '<p><strong>Important:</strong> Adding IP addresses to your .htaccess file will block them from accessing your site entirely, even before they reach WordPress. Only proceed if you know what you are doing. Always make a backup of your .htaccess file before editing it.</p>';
     echo '<p>Copy and paste the following lines into your .htaccess file to block the IPs manually:</p>';
 
-    if (!empty($blocked_ips)) {
+    if (!empty($blocked_ips) || !empty($blocked_ip_ranges)) {
         echo '<textarea readonly style="width: 100%; height: 200px; font-family: monospace;">';
         echo "# BEGIN Bait User IP Block\n";
         echo "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
@@ -241,28 +317,42 @@ function bait_user_settings_page() {
             echo "Deny from " . esc_html($ip->ip_address) . "\n";
         }
 
+        foreach ($blocked_ip_ranges as $range) {
+            echo "Deny from " . esc_html($range) . "\n";
+        }
+
         echo "# END Bait User IP Block\n";
         echo '</textarea>';
     } else {
-        echo '<p>No IP addresses to block at the moment.</p>';
+        echo '<p>No IP addresses or ranges to block at the moment.</p>';
     }
 
     echo '</div>';
 }
 
-// Function to update the .htaccess file with blocked IPs
+// Function to update the .htaccess file with blocked IPs and ranges
 function update_htaccess_with_blocked_ips() {
     global $wpdb;
 
+    $whitelist_ips = get_option('bait_user_whitelist_ips', []);
     $table_name = $wpdb->prefix . 'blocked_ips';
     $blocked_ips = $wpdb->get_results("SELECT ip_address FROM $table_name");
+
+    // Get manually blocked IP ranges
+    $blocked_ip_ranges = get_option('bait_user_blocked_ip_ranges', []);
 
     // Prepare the content to be added to .htaccess
     $htaccess_content = "# BEGIN Bait User IP Block\n";
     $htaccess_content .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
 
     foreach ($blocked_ips as $ip) {
-        $htaccess_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
+        if (!in_array($ip->ip_address, $whitelist_ips)) {
+            $htaccess_content .= "Deny from " . esc_html($ip->ip_address) . "\n";
+        }
+    }
+
+    foreach ($blocked_ip_ranges as $range) {
+        $htaccess_content .= "Deny from " . esc_html($range) . "\n";
     }
 
     $htaccess_content .= "# END Bait User IP Block\n";
@@ -283,7 +373,7 @@ function update_htaccess_with_blocked_ips() {
         if (file_put_contents($htaccess_file, $new_htaccess) === false) {
             error_log('Failed to write to .htaccess file.');
         } else {
-            error_log('Successfully updated .htaccess with blocked IPs.');
+            error_log('Successfully updated .htaccess with blocked IPs and ranges.');
         }
     } else {
         error_log('Failed to write to .htaccess file. Please check file permissions.');
