@@ -7,7 +7,7 @@ This roadmap outlines the future development plans and potential features for th
 ## Version 1.2.x
 
 ### 1. **IP Whitelisting**
-   - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user.
+   - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user. | :white_check_mark: |
 
 ### 2. **IP Range Blocking**
    - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks.
