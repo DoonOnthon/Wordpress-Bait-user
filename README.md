@@ -48,18 +48,18 @@ Contributions are welcome! Please follow these steps:
 
 ## License
 
-This project is licensed under the **[Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/)**. 
+This project is licensed under the Creative Commons Attribution 4.0 International License.
 
-**You are not allowed to:**
-- Use the code for commercial purposes.
-- Distribute modified versions of the code.
-- Sub-license or sell the code.
+### You are allowed to:
+- **Use** the code for any purpose, including commercial.
+- **Share** the code in any medium or format.
+- **Adapt**, modify, transform, and build upon the material for any purpose, even commercially.
 
-**You are allowed to:**
-- Use the code for personal, educational, or non-commercial purposes with proper attribution.
-- Share the unmodified code.
+### Under the following condition:
+- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 
-For more details, see the [LICENSE](LICENSE) file in this repository.
+For more details, see the LICENSE file in this repository.
+
 
 ## Support
 
