@@ -53,7 +53,6 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 ### You are allowed to:
 - **Use** the code for any purpose, including commercial.
 - **Share** the code in any medium or format.
-- **Adapt**, modify, transform, and build upon the material for any purpose, even commercially.
 
 ### Under the following condition:
 - **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
