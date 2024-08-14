@@ -10,7 +10,7 @@ This roadmap outlines the future development plans and potential features for th
    - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user. | :white_check_mark: |
 
 ### 2. **IP Range Blocking**
-   - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks.
+   - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks. | :white_check_mark: |
 
 ### 3. **Logging and Reporting**
    - **Detailed Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames.
