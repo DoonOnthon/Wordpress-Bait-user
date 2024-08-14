@@ -37,7 +37,7 @@ SOON
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
-
+**PLEASE try to follow the roadmap when working on issues, its not a must but it makes life easier.**
 1. Fork the repository.
 2. **Create a new branch**: Before you make any changes, create a new branch for your feature or bugfix. This keeps the `master` branch clean and ensures that your work can be reviewed without affecting the stable code.
    ```bash
