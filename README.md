@@ -7,6 +7,7 @@
 | ------- | ------------------ |
 | 6.5.5   | :white_check_mark: |
 | 6.6.1   | :white_check_mark: |
+
 ## Description
 
 **Bait-User** is a WordPress plugin designed to enhance your site's security by blocking users based on specific bait accounts. When a user attempts to log in with the bait account, their IP address is captured and blocked automatically. The plugin also provides an option to block IPs at the server level by modifying the `.htaccess` file.
