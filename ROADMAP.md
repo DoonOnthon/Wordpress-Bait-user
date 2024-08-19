@@ -10,14 +10,12 @@ This roadmap outlines the future development plans and potential features for th
    - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user. 
 
 ### 2. **IP Range Blocking** | :white_check_mark: |
-   - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks. 
-
+   - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks. </br>
+     
+## Version 1.3.x **WORDPRESS RELEASE**
 ### 3. **Logging and Reporting**
    - **Detailed Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames.
    - **Export Logs**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
-     
-## Version 1.3.x **WORDPRESS RELEASE**
-
 ### 4. **Geolocation-Based Blocking**
    - **Country-Level Blocking**: Integrate geolocation to block or allow access based on the country of origin of the IP address.
    - **Region-Specific Rules**: Implement custom rules that apply different security measures based on the user’s geographic region.
