@@ -47,9 +47,8 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch: `git push origin feature/your-feature-name`.
 5. Submit a pull request.
 
-## License
-
-This project is licensed under the Creative Commons Attribution 4.0 International License.
+# License
+GPL v3 or later
 
 ### You are allowed to:
 - **Use** the code for any purpose, including commercial.
