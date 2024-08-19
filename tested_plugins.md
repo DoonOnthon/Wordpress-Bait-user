@@ -1,6 +1,7 @@
 ## This plugin has been tested with these plugins. </br>
 **NOTE : These plugins / builders are tested individually or any random sory of combination, doing every combination is impossible. </br>
 <ul>
+  <li>Plugin Check (PCP)  ; Tested wp version : 6.6.1</li>
   <li>Avada builder  ; Tested wp version : 6.6.1</li>
   <li>Avada Core  ; Tested wp version : 6.6.1</li>
   <li>Booking Package SAASPROJECT  ; Tested wp version : 6.6.1</li>
