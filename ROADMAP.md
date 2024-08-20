@@ -12,7 +12,7 @@ This roadmap outlines the future development plans and potential features for th
 ### 2. **IP Range Blocking** | :white_check_mark: |
    - **Block IP Ranges**: Add the ability to block entire IP ranges, providing more comprehensive security against threats originating from known problematic IP blocks. </br>
      
-## Version 1.3.x **WORDPRESS RELEASE**
+## Version 1.3.x
 ### 3. **Logging and Reporting**
    - **Detailed Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames.
    - **Export Logs**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
