@@ -229,7 +229,7 @@ function bait_user_logs_page() {
     $selected_log_type = isset($_GET['log_type']) ? sanitize_text_field($_GET['log_type']) : 'login';
 
     echo '<div class="wrap">';
-    echo '<h1>Bait User Logs</h1>';
+    echo '<h1><span class="dashicons dashicons-shield-alt"></span> Bait User Logs</h1>';
 
     // Dropdown to select log type
     echo '<form method="GET" action="">';
@@ -311,4 +311,11 @@ function bait_user_display_log_table($logs) {
 
     echo '</tbody>';
     echo '</table>';
+}
+function bait_user_help_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    echo '<h1><span class="dashicons dashicons-shield-alt"></span> Bait User Help Page</h1>';
+
 }
