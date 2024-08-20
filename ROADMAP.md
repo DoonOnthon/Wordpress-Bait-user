@@ -15,7 +15,7 @@ This roadmap outlines the future development plans and potential features for th
 ## Version 1.3.x
 ### 3. **Logging and Reporting**
    - **Login Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames. | ✅ |
-   - **Activity Logs**: Create a logging system that records activities, along with IP addresses, timestamps, and usernames. | ✅ |
+   - **Activity Logs**: Create a logging system that records activities, along with IP addresses, timestamps, and usernames.
    - **Export Logs - NOT A PRIORITY**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
 ### 4. **Geolocation-Based Blocking**
    - **Country-Level Blocking**: Integrate geolocation to block or allow access based on the country of origin of the IP address.
