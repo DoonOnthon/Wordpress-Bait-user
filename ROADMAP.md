@@ -4,7 +4,7 @@
 
 This roadmap outlines the future development plans and potential features for the Bait-User WordPress Plugin. The goal is to continually improve the plugin's functionality, security, and user experience while keeping the feature set practical and user-focused.
 
-## Version 1.2.x
+## Version 1.2.x | ✅ |
 
 ### 1. **IP Whitelisting** | :white_check_mark: |
    - **Whitelist Specific IPs**: Implement a feature that allows administrators to whitelist certain IP addresses, ensuring they are never blocked by the plugin, even if they attempt to log in with the bait user. 
@@ -14,8 +14,9 @@ This roadmap outlines the future development plans and potential features for th
      
 ## Version 1.3.x
 ### 3. **Logging and Reporting**
-   - **Detailed Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames.
-   - **Export Logs**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
+   - **Login Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames. | ✅ |
+   - **Activity Logs**: Create a logging system that records activities, along with IP addresses, timestamps, and usernames. | ✅ |
+   - **Export Logs - NOT A PRIORITY**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
 ### 4. **Geolocation-Based Blocking**
    - **Country-Level Blocking**: Integrate geolocation to block or allow access based on the country of origin of the IP address.
    - **Region-Specific Rules**: Implement custom rules that apply different security measures based on the user’s geographic region.
