@@ -5,23 +5,16 @@ if (!defined('ABSPATH')) {
 }
 
 function ip_in_range($ip, $range) {
-    // Check if the range contains a valid CIDR netmask (i.e., the '/' character)
     if (strpos($range, '/') === false) {
-        // If no netmask is provided, assume it's a single IP address
         return $ip === $range;
     }
 
     list($range, $netmask) = explode('/', $range, 2);
-
-    // Convert IP and range to their decimal representations
     $range_decimal = ip2long($range);
     $ip_decimal = ip2long($ip);
-
-    // Calculate wildcard and netmask decimals
     $wildcard_decimal = pow(2, (32 - $netmask)) - 1;
     $netmask_decimal = ~$wildcard_decimal;
 
-    // Check if the IP is in the range
     return ($ip_decimal & $netmask_decimal) == ($range_decimal & $netmask_decimal);
 }
 
@@ -32,10 +25,8 @@ function update_htaccess_with_blocked_ips() {
     $table_name = $wpdb->prefix . 'blocked_ips';
     $blocked_ips = $wpdb->get_results("SELECT ip_address FROM $table_name");
 
-    // Get manually blocked IP ranges
     $blocked_ip_ranges = get_option('bait_user_blocked_ip_ranges', []);
 
-    // Prepare the content to be added to .htaccess
     $htaccess_content = "# BEGIN Bait User IP Block\n";
     $htaccess_content .= "# This is part of the Bait User plugin. Do not delete this unless you know what you're doing.\n";
 
@@ -51,19 +42,15 @@ function update_htaccess_with_blocked_ips() {
 
     $htaccess_content .= "# END Bait User IP Block\n";
 
-    // Define the path to the .htaccess file
     $htaccess_file = ABSPATH . '.htaccess';
     
     if (is_writable($htaccess_file)) {
         $current_htaccess = file_get_contents($htaccess_file);
         
-        // Remove any existing Bait User block
         $new_htaccess = preg_replace('/# BEGIN Bait User IP Block.*# END Bait User IP Block/s', '', $current_htaccess);
         
-        // Add the new content
         $new_htaccess .= "\n" . $htaccess_content;
 
-        // Write the updated content back to .htaccess
         if (file_put_contents($htaccess_file, $new_htaccess) === false) {
             error_log('Failed to write to .htaccess file.');
         } else {
@@ -73,3 +60,89 @@ function update_htaccess_with_blocked_ips() {
         error_log('Failed to write to .htaccess file. Please check file permissions.');
     }
 }
+
+/**
+ * Logs login attempts to the database.
+ *
+ * @param string $user_login The username of the user logging in.
+ * @param WP_User $user The WP_User object for the user logging in.
+ */
+function log_login_attempt($user_login, $user) {
+    global $wpdb;
+    
+    $user_id = intval($user->ID); 
+    $ip_address = sanitize_text_field($_SERVER['REMOTE_ADDR']); 
+    $log_time = current_time('mysql'); 
+    $details = 'Login successful'; 
+
+    $table_name = $wpdb->prefix . 'login_logs';
+    $inserted = $wpdb->insert(
+        $table_name,
+        array(
+            'user_id' => $user_id,
+            'ip_address' => $ip_address,
+            'log_time' => $log_time,
+            'details' => $details
+        ),
+        array(
+            '%d', 
+            '%s', 
+            '%s', 
+            '%s'  
+        )
+    );
+
+    if ($wpdb->last_error) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Failed to insert login log: ' . $wpdb->last_error);
+        }
+    } else {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Login log inserted successfully for user ID: ' . $user_id);
+        }
+    }
+}
+
+/**
+ * Logs failed login attempts to the database.
+ *
+ * @param string $username The username of the failed login attempt.
+ */
+function log_failed_login($username) {
+    global $wpdb;
+    
+    $ip_address = sanitize_text_field($_SERVER['REMOTE_ADDR']); 
+    $log_time = current_time('mysql'); 
+    $details = 'Login failed'; 
+
+    $table_name = $wpdb->prefix . 'login_logs';
+    $inserted = $wpdb->insert(
+        $table_name,
+        array(
+            'user_id' => 0, // No user ID for failed logins
+            'ip_address' => $ip_address,
+            'log_time' => $log_time,
+            'details' => $details . ' for user: ' . sanitize_text_field($username)
+        ),
+        array(
+            '%d', 
+            '%s', 
+            '%s', 
+            '%s'  
+        )
+    );
+
+    if ($wpdb->last_error) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Failed to insert failed login log: ' . $wpdb->last_error);
+        }
+    } else {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Failed login log inserted successfully for username: ' . sanitize_text_field($username));
+        }
+    }
+}
+
+// Hook the logging functions
+add_action('wp_login', 'log_login_attempt', 10, 2);
+add_action('wp_login_failed', 'log_failed_login');

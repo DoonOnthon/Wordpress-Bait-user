@@ -7,7 +7,8 @@ if (!defined('ABSPATH')) {
 // Add a Settings link to the plugin's action links in the plugins list
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'bait_user_add_action_links');
 
-function bait_user_add_action_links($links) {
+function bait_user_add_action_links($links)
+{
     $settings_link = '<a href="admin.php?page=bait_user_settings">Settings</a>';
     array_unshift($links, $settings_link);
     return $links;
@@ -16,7 +17,8 @@ function bait_user_add_action_links($links) {
 // Add custom plugin row meta to include 'Tested up to' and 'Requires at least'
 add_filter('plugin_row_meta', 'add_custom_plugin_meta', 10, 2);
 
-function add_custom_plugin_meta($plugin_meta, $plugin_file) {
+function add_custom_plugin_meta($plugin_meta, $plugin_file)
+{
     if ($plugin_file === plugin_basename(__FILE__)) {
         $plugin_meta[] = 'Tested up to: 6.6.1';
     }
@@ -25,8 +27,8 @@ function add_custom_plugin_meta($plugin_meta, $plugin_file) {
 
 // Add admin menu
 add_action('admin_menu', 'bait_user_add_admin_menu');
-
-function bait_user_add_admin_menu() {
+function bait_user_add_admin_menu()
+{
     add_menu_page(
         'Bait User Settings',
         'Bait User',
@@ -36,9 +38,27 @@ function bait_user_add_admin_menu() {
         'dashicons-shield-alt',
         20
     );
+    // Submenu for Logs
+    add_submenu_page(
+        'bait_user_settings',
+        'Bait User Logs',
+        'Logs',
+        'manage_options',
+        'bait_user_logs',
+        'bait_user_logs_page'
+    );
+    // Submenu for help
+    add_submenu_page(
+        'bait_user_settings',
+        'Bait User Help',
+        'Help',
+        'manage_options',
+        'bait_user_help',
+        'bait_user_help_page'
+    );
 }
-
-function bait_user_settings_page() {
+function bait_user_settings_page()
+{
     global $wpdb;
 
     if (!current_user_can('manage_options')) {
@@ -76,6 +96,15 @@ function bait_user_settings_page() {
 
     echo '<div class="wrap">';
     echo '<h1><span class="dashicons dashicons-shield-alt"></span> Bait User Plugin Settings</h1>';
+    echo '<hr>';
+
+    // Add buttons for navigation to Logs and other sections
+    echo '<div class="custom-admin-buttons">';
+    echo '<a href="admin.php?page=bait_user_settings" class="button">Settings</a>';
+    echo '<a href="admin.php?page=bait_user_logs" class="button button-primary">View Logs</a>';
+    echo '<a href="admin.php?page=bait_user_help" class="button">Help</a>';
+    echo '</div>';
+
     echo '<hr>';
 
     echo '<form method="POST" action="" style="max-width: 600px;">';
@@ -124,6 +153,7 @@ function bait_user_settings_page() {
 
     echo '</table>';
     echo '<p class="submit"><input type="submit" class="button button-primary" value="Save Changes" /></p>';
+
     echo '</form>';
 
     echo '<hr>';
@@ -188,4 +218,97 @@ function bait_user_settings_page() {
     }
 
     echo '</div>';
+}
+//Create user logs page
+function bait_user_logs_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    // Get the selected log type from the URL
+    $selected_log_type = isset($_GET['log_type']) ? sanitize_text_field($_GET['log_type']) : 'login';
+
+    echo '<div class="wrap">';
+    echo '<h1>Bait User Logs</h1>';
+
+    // Dropdown to select log type
+    echo '<form method="GET" action="">';
+    echo '<input type="hidden" name="page" value="bait_user_logs" />';
+    echo '<select name="log_type" onchange="this.form.submit()">';
+    echo '<option value="login" ' . selected($selected_log_type, 'login', false) . '>Login Logs</option>';
+    echo '<option value="error" ' . selected($selected_log_type, 'error', false) . '>Error Logs</option>';
+    echo '<option value="activity" ' . selected($selected_log_type, 'activity', false) . '>Activity Logs</option>';
+    echo '</select>';
+    echo '</form>';
+
+    echo '<hr>';
+
+    // Display the logs based on the selected type
+    bait_user_display_logs($selected_log_type);
+
+    echo '</div>';
+}
+
+function bait_user_display_logs($log_type) {
+    global $wpdb;
+    
+    // Set a limit for the number of logs to display
+    $limit = 100;
+    $logs = [];
+
+    switch ($log_type) {
+        case 'login':
+            echo '<h2>Login Logs</h2>';
+            // Example query to get login logs from the database
+            $logs = $wpdb->get_results("SELECT log_time, ip_address, details FROM {$wpdb->prefix}login_logs ORDER BY log_time DESC LIMIT $limit");
+            break;
+
+        case 'error':
+            echo '<h2>Error Logs</h2>';
+            // Example query to get error logs from the database
+            $logs = $wpdb->get_results("SELECT log_time, details FROM {$wpdb->prefix}error_logs ORDER BY log_time DESC LIMIT $limit");
+            break;
+
+        case 'activity':
+            echo '<h2>Activity Logs</h2>';
+            // Example query to get activity logs from the database
+            $logs = $wpdb->get_results("SELECT log_time, details FROM {$wpdb->prefix}activity_logs ORDER BY log_time DESC LIMIT $limit");
+            break;
+
+        default:
+            echo '<p>No logs found for this log type.</p>';
+            return; // Return early if the log type is invalid
+    }
+
+    // Call the display function with the retrieved logs
+    bait_user_display_log_table($logs);
+}
+
+function bait_user_display_log_table($logs) {
+    if (empty($logs)) {
+        echo '<p>No logs found.</p>';
+        return;
+    }
+
+    // Display the logs in a table
+    echo '<table class="widefat fixed striped">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Date/Time</th>';
+    echo '<th>Details</th>';
+    echo '<th>IP Address</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+
+    foreach ($logs as $log) {
+        echo '<tr>';
+        echo '<td>' . esc_html($log->log_time) . '</td>';
+        echo '<td>' . esc_html($log->details) . '</td>';
+        echo '<td>' . esc_html($log->ip_address) . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
 }
