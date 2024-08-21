@@ -225,11 +225,11 @@ function bait_user_logs_page() {
         return;
     }
 
-    // Get the selected log type from the URL
+    // Get the selected log type and page number from the URL
     $selected_log_type = isset($_GET['log_type']) ? sanitize_text_field($_GET['log_type']) : 'login';
 
     echo '<div class="wrap">';
-    echo '<h1>Bait User Logs</h1>';
+    echo '<h1><span class="dashicons dashicons-shield-alt"></span> Bait User Logs</h1>';
 
     // Dropdown to select log type
     echo '<form method="GET" action="">';
@@ -249,30 +249,51 @@ function bait_user_logs_page() {
     echo '</div>';
 }
 
+
 function bait_user_display_logs($log_type) {
     global $wpdb;
-    
-    // Set a limit for the number of logs to display
-    $limit = 100;
+
+    // Get the current page number from the URL, default to 1
+    $paged = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
+    $paged = $paged < 1 ? 1 : $paged;
+
+    // Set a limit for the number of logs to display per page and total limit
+    $per_page = 75;
+    $total_limit = 1000;
+    $offset = ($paged - 1) * $per_page;
+
     $logs = [];
+    $total_logs = 0;
 
     switch ($log_type) {
         case 'login':
             echo '<h2>Login Logs</h2>';
-            // Example query to get login logs from the database
-            $logs = $wpdb->get_results("SELECT log_time, ip_address, details FROM {$wpdb->prefix}login_logs ORDER BY log_time DESC LIMIT $limit");
+            $total_logs = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}login_logs");
+            $logs = $wpdb->get_results($wpdb->prepare(
+                "SELECT log_time, ip_address, details FROM {$wpdb->prefix}login_logs ORDER BY log_time DESC LIMIT %d OFFSET %d",
+                min($per_page, $total_limit),
+                $offset
+            ));
             break;
 
         case 'error':
             echo '<h2>Error Logs</h2>';
-            // Example query to get error logs from the database
-            $logs = $wpdb->get_results("SELECT log_time, details FROM {$wpdb->prefix}error_logs ORDER BY log_time DESC LIMIT $limit");
+            $total_logs = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}error_logs");
+            $logs = $wpdb->get_results($wpdb->prepare(
+                "SELECT log_time, details FROM {$wpdb->prefix}error_logs ORDER BY log_time DESC LIMIT %d OFFSET %d",
+                min($per_page, $total_limit),
+                $offset
+            ));
             break;
 
         case 'activity':
             echo '<h2>Activity Logs</h2>';
-            // Example query to get activity logs from the database
-            $logs = $wpdb->get_results("SELECT log_time, details FROM {$wpdb->prefix}activity_logs ORDER BY log_time DESC LIMIT $limit");
+            $total_logs = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}activity_logs");
+            $logs = $wpdb->get_results($wpdb->prepare(
+                "SELECT log_time, details FROM {$wpdb->prefix}activity_logs ORDER BY log_time DESC LIMIT %d OFFSET %d",
+                min($per_page, $total_limit),
+                $offset
+            ));
             break;
 
         default:
@@ -280,9 +301,38 @@ function bait_user_display_logs($log_type) {
             return; // Return early if the log type is invalid
     }
 
-    // Call the display function with the retrieved logs
     bait_user_display_log_table($logs);
+
+    // Pagination
+    bait_user_display_pagination($total_logs, $per_page, $paged, $log_type);
 }
+function bait_user_display_pagination($total_logs, $per_page, $current_page, $log_type) {
+    $total_pages = ceil($total_logs / $per_page);
+
+    if ($total_pages <= 1) {
+        return; // No pagination needed
+    }
+
+    echo '<div class="tablenav bottom">';
+    echo '<div class="pagination">';
+    echo '<span class="displaying-num">' . sprintf(__('Showing %d–%d of %d', 'text-domain'), ($current_page - 1) * $per_page + 1, min($current_page * $per_page, $total_logs), $total_logs) . '</span>';
+
+    // Previous page link
+    if ($current_page > 1) {
+        echo '<a class="first-page button" href="?page=bait_user_logs&log_type=' . esc_attr($log_type) . '&paged=1">&laquo; First</a>';
+        echo '<a class="prev-page button" href="?page=bait_user_logs&log_type=' . esc_attr($log_type) . '&paged=' . ($current_page - 1) . '">&lsaquo; Previous</a>';
+    }
+
+    // Next page link
+    if ($current_page < $total_pages) {
+        echo '<a class="next-page button" href="?page=bait_user_logs&log_type=' . esc_attr($log_type) . '&paged=' . ($current_page + 1) . '">Next &rsaquo;</a>';
+        echo '<a class="last-page button" href="?page=bait_user_logs&log_type=' . esc_attr($log_type) . '&paged=' . $total_pages . '">Last &raquo;</a>';
+    }
+
+    echo '</div>';
+    echo '</div>';
+}
+
 
 function bait_user_display_log_table($logs) {
     if (empty($logs)) {
@@ -311,4 +361,11 @@ function bait_user_display_log_table($logs) {
 
     echo '</tbody>';
     echo '</table>';
+}
+function bait_user_help_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    echo '<h1><span class="dashicons dashicons-shield-alt"></span> Bait User Help Page</h1>';
+
 }
