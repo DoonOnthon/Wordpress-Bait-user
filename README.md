@@ -50,16 +50,16 @@ Contributions are welcome! Please follow these steps:
 # License
 GPL v3 or later
 
-| :white_check_mark: |Permissions
-| :white_check_mark: | Commercial use
-| :white_check_mark: | Modification
-| :white_check_mark: | Distribution
-| :white_check_mark: | Private use
-| ❎ | Limitations
-| ❎ | Liability
-| ❎ | Trademark use
-| ❎ | Patent use
-| ❎ | Warranty
+| :white_check_mark: |Permissions </br>
+| :white_check_mark: | Commercial use </br>
+| :white_check_mark: | Modification </br>
+| :white_check_mark: | Distribution </br>
+| :white_check_mark: | Private use </br>
+| ❎ | Limitations </br>
+| ❎ | Liability </br>
+| ❎ | Trademark use </br>
+| ❎ | Patent use </br>
+| ❎ | Warranty </br>
 
 
 ## Support
