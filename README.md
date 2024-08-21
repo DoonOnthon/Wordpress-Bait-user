@@ -50,14 +50,16 @@ Contributions are welcome! Please follow these steps:
 # License
 GPL v3 or later
 
-### You are allowed to:
-- **Use** the code for any purpose, including commercial.
-- **Share** the code in any medium or format.
-
-### Under the following condition:
-- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-
-For more details, see the LICENSE file in this repository.
+| :white_check_mark: |Permissions
+| :white_check_mark: | Commercial use
+| :white_check_mark: | Modification
+| :white_check_mark: | Distribution
+| :white_check_mark: | Private use
+| ❎ | Limitations
+| ❎ | Liability
+| ❎ | Trademark use
+| ❎ | Patent use
+| ❎ | Warranty
 
 
 ## Support
