@@ -1,4 +1,5 @@
 # Bait-User WordPress Plugin
+## ❗NOTE : FOR A STABLE VERSION DOWNLOAD ONE OF THE RELEASES NOT THE MASTER BRANCH ❗
 **Tested versions**
 
 !Versions were tested on empty wordpress installs!    
