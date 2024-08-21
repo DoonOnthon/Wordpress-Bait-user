@@ -48,18 +48,18 @@ Contributions are welcome! Please follow these steps:
 5. Submit a pull request.
 
 # License
-GPL v3 or later
+Creative Commons Zero v1.0 Universal
 
 | :white_check_mark: |Permissions </br>
 | :white_check_mark: | Commercial use </br>
 | :white_check_mark: | Modification </br>
 | :white_check_mark: | Distribution </br>
 | :white_check_mark: | Private use </br>
-| ❎ | Limitations </br>
-| ❎ | Liability </br>
-| ❎ | Trademark use </br>
-| ❎ | Patent use </br>
-| ❎ | Warranty </br>
+| :no_entry_sign: | Limitations </br>
+| :no_entry_sign: | Liability </br>
+| :no_entry_sign: | Trademark use </br>
+| :no_entry_sign: | Patent use </br>
+| :no_entry_sign: | Warranty </br>
 
 
 ## Support
