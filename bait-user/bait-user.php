@@ -8,8 +8,8 @@
  * Tested up to:      6.6.1
  * Author:            DoonOnthon / Dean
  * Author URI:        https://github.com/DoonOnthon
- * License:           GPL v2 or later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * License:           CC0 1.0 Universal
+ * License URI:       https://creativecommons.org/publicdomain/zero/1.0/deed.en
  * Update URI:        https://github.com/DoonOnthon/bait-user
  * Text Domain:       Bait-user
  */
