@@ -15,8 +15,6 @@ This roadmap outlines the future development plans and potential features for th
 ## Version 1.3.x
 ### 3. **Logging and Reporting**
    - **Login Logs**: Create a logging system that records all login attempts, including successful, failed, and blocked attempts, along with IP addresses, timestamps, and usernames. | ✅ |
-   - **Activity Logs**: Create a logging system that records activities, along with IP addresses, timestamps, and usernames.
-   - **Export Logs - NOT A PRIORITY**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
 ### 4. **Geolocation-Based Blocking**
    - **Country-Level Blocking**: Integrate geolocation to block or allow access based on the country of origin of the IP address.
    - **Region-Specific Rules**: Implement custom rules that apply different security measures based on the user’s geographic region.
@@ -29,7 +27,9 @@ This roadmap outlines the future development plans and potential features for th
 ### 6. **Advanced Customization Options**
    - **Hooks and Filters**: Provide advanced users with hooks and filters to customize the plugin’s behavior to fit their unique security needs.
    - **Customizable Alerts**: Allow administrators to set custom alerts and actions based on specific security events, such as repeated login attempts from a single IP address.
-
+### 7. **Reporting and logging**
+   - **Activity Logs**: Create a logging system that records activities, along with IP addresses, timestamps, and usernames.
+   - **Export Logs - NOT A PRIORITY**: Implement an option to export logs to CSV or JSON format for further analysis or integration with other security tools.
 ## Version 1.5.x and Beyond **(VERY LIKELY TO CHANGE)**
 
 ### 8. **Cloud Integration (Future Consideration)**
