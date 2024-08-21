@@ -1,5 +1,5 @@
 # Bait-User WordPress Plugin
-### ❗NOTE : FOR A STABLE VERSION DOWNLOAD ONE OF THE RELEASES NOT THE MASTER BRANCH ❗
+### ❗NOTE : FOR A STABLE VERSION DOWNLOAD ONE OF THE <a href="https://github.com/DoonOnthon/Wordpress-Bait-user/releases">RELEASES</a> NOT THE MASTER BRANCH ❗
 **Tested versions**
 
 !Versions were tested on empty wordpress installs!    
