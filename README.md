@@ -37,7 +37,7 @@
 SOON
 
 ## Contributing
-
+❗### For a more detailed explanation check out : <a href="https://github.com/DoonOnthon/Wordpress-Bait-user/blob/main/CONTRIBUTING.md">CONTRIBUTE</a>
 Contributions are welcome! Please follow these steps:
 **PLEASE try to follow the roadmap when working on issues, its not a must but it makes life easier.**
 1. Fork the repository.
